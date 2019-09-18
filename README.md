@@ -20,17 +20,17 @@ dmcontest目录下存放了训练数据、测试数据和预测结果
 
 dmcontest
 
-|--compete_data
++--compete_data
 
-|   |--test_data
+|  +--test_data
 
-|   |--train_data
+|  \\--train_data
 
-|--result
++--result
 
-|--src
++--src
 
-|--venv(运行环境)
+\\--venv(运行环境)
 
 ### 2.注意事项
 
