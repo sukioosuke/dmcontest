@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 
+from functools import reduce
 from src import utilities
 
 def load_user_labels():
@@ -18,6 +19,7 @@ def load_user_labels():
 
 # TODO 处理非连续特征
 def load_user_feature():
+    dfs = []
     continuous_data1 = pd.read_csv('../compete_data/train_data/final_data_1.csv').get(['user_id', 'feat_5']).fillna(0)
     continuous_data2 = pd.read_csv('../compete_data/train_data/final_data_2.csv').drop(
         ['feat_18', 'feat_54', 'feat_55'], axis=1).fillna(0)
@@ -34,16 +36,24 @@ def load_user_feature():
     temp = continuous_data1[['feat_5']].apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))
     continuous_data1.drop('feat_5', axis=1)
     continuous_data1['feat_5'] = temp
+    dfs.append(continuous_data1)
     temp = continuous_data2['user_id']
     continuous_data2 = continuous_data2[continuous_data2.columns[1:]].apply(
         lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))
     continuous_data2['user_id'] = temp
+    dfs.append(continuous_data2)
     temp = continuous_data3['user_id']
     continuous_data3 = continuous_data3[continuous_data3.columns[1:]].apply(
         lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))
     continuous_data3['user_id'] = temp
+    dfs.append(continuous_data3)
+    temp = continuous_data4['user_id']
+    # continuous_data4 = continuous_data4[continuous_data4.columns[1:]].apply(
+    #     lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))
+    # continuous_data4['user_id'] = temp
+    # dfs.append(continuous_data4)
 
-    return pd.merge(pd.merge(continuous_data1, continuous_data2, on=['user_id']), continuous_data3, on=['user_id'])
+    return reduce(lambda left, right: pd.merge(left, right, on=['user_id']), dfs)
 
 
 def load_test_feture():
